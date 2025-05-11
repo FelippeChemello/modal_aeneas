@@ -92,7 +92,7 @@ class Model:
     def _inference(self, text: str, audio_file: bytes):
         return self.inference(text, audio_file)
     
-    @modal.web_endpoint(docs=True, method="POST")
+    @modal.fastapi_endpoint(docs=True, method="POST")
     def web_inference(self, text: str = Form(...), audio_file: UploadFile = File(...), x_api_key: str = Header(None)):
         api_key = os.getenv("API_KEY")
         if x_api_key != api_key:

@@ -1,7 +1,7 @@
 @baseURL = {{$dotenv BASE_URL}}
 @apikey = {{$dotenv API_KEY}}
 
-POST {{baseURL}}
+POST {{baseURL}} HTTP/1.1
 x-api-key: {{apikey}}
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
