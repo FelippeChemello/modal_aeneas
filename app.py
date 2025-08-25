@@ -16,14 +16,11 @@ image = modal.Image.debian_slim(python_version="3.10").apt_install(
         "libxml2-dev",
         "libxslt-dev",
         "zlib1g-dev",
-    ).pip_install(
+    ).uv_pip_install(
         "fastapi",
         "uvicorn[standard]",
         "python-dotenv",
         "requests",
-        "g4f",
-        "diskcache",
-        "anthropic",
         "numpy==1.24.2 ",
         "packaging==23.1 ",
         "pandas==1.5.3 ",
@@ -55,7 +52,7 @@ with image.imports():
     from aeneas.task import Task
     from aeneas.runtimeconfiguration import RuntimeConfiguration
         
-@app.cls(gpu=None, image=image, timeout=16, secrets=[modal.Secret.from_name("aeneas-secret")])
+@app.cls(gpu=None, image=image, timeout=150, secrets=[modal.Secret.from_name("aeneas-secret")])
 class Model:
     def inference(self, text: str, audio_file: bytes):
         print("Aligning text to speech...")
