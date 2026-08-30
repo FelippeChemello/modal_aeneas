@@ -1,56 +1,71 @@
 # Aeneas Text-to-Speech Alignment
 
-This project provides a FastAPI-based web service that uses the Aeneas library to align text with audio files. The service accepts a text input and an audio file, and returns the alignment information in JSON format. The service is built on the [Modal.com](https://www.modal.com/) platform.
+This project provides a Modal service that uses the Aeneas library to align text with audio files. The service accepts a text input and audio bytes, and returns the alignment information in JSON format.
 
 ## Installation
 
-To install the project, clone the repository and install the dependencies using pip:
+To install the dependencies using uv:
 
 ```bash
-git clone git@github.com:FelippeChemello/modal_aeneas.git
-cd modal_aeneas
-pip install -r requirements.txt
+uv sync
 ```
 
 ## Prerequisites
 
-- Python 3.10
+- Python >= 3.10
 - A [modal.com](https://www.modal.com/) account
-- An `API_KEY` for the service, stored as a secret in Modal.com under the name `aeneas-secret`
-
+- Modal Python SDK >= 1.2
 
 ## Deployment
 
-to run the service you need to setup modal.com CLI
+Setup the Modal CLI:
 
 ```bash
 modal setup
 ```
 
-and then deploy the service
+Deploy the service:
 
 ```bash
-modal deploy app.py --name aeneas
+modal deploy app.py
 ```
 
-### Development
+### Development & Local Testing
 
-To run the service locally, use the following command:
+To test locally:
 
 ```bash
-modal serve app.py 
+modal run app.py
 ```
 
-## Usage
+## Calling via Modal SDK
 
-To use the service, send a POST request to the root URL, provided by modal, with the following parameters as form data:
+### Python SDK
 
-- `text`: The text to align with the audio file
-- `audio_file`: The audio file to align with the text
+```python
+import modal
 
-along with the `API_KEY` in the headers as `x-api-key`
+Model = modal.Cls.from_name("aeneas", "Model")
+aligned_text = Model().inference.remote(text="Your text here", audio_file=audio_bytes)
+```
 
-The service will return a JSON response with the alignment information.
+### JavaScript / TypeScript SDK
 
+```javascript
+import { ModalClient } from "@modal-labs/client";
 
+const client = new ModalClient();
+const fn = await client.functions.get("aeneas", "Model.inference");
+const result = await fn.call({
+  text: "Your text here",
+  audio_file: audioBuffer
+});
+```
 
+### Testing Deployed Service
+
+Run the test client with the sample audio and text from `api.rest`:
+
+```bash
+python client.py
+```
